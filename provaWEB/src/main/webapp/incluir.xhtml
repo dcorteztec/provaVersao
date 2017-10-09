@@ -1,0 +1,151 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+<f:view>
+	<h:head>
+		<title>Versão</title>
+
+		<style type="text/css">
+.ui-widget {
+	font-size: 75% !important;
+}
+</style>
+	</h:head>
+
+	<h:body>
+		<h:form id="frmGeral">
+			<p:fieldset legend="Controle de Versão" toggleable="true">
+				<p:messages id="messages" />
+				<h:inputHidden value="#{versaoController.versaoModel.codigo}" />
+				<h:panelGrid columns="2" id="painelId"
+					style="font-family: Verdana, Arial; font-weight: bold;">
+					<h:outputLabel id="lbNumero" value="*Número da Versão:"
+						for="numero" style="float: right;" />
+					<p:inputText id="numero" size="10"
+						value="#{versaoController.versaoModel.numero}" required="true"
+						requiredMessage="Campo [Número da Versão] é obrigatório." />
+
+					<h:outputLabel id="lbData" value="*Data da Versão:" for="data"
+						style="float: right;" />
+					<p:calendar id="data" value="#{versaoController.versaoModel.data}"
+						required="true"
+						requiredMessage="Campo [Data da Versão] é obrigatório."
+						pattern="dd-M-yyyy" />
+
+					<p:outputLabel for="liberado" value="Liberado:"
+						style="float: right;" />
+					<p:selectOneRadio id="liberado"
+						value="#{versaoController.versaoModel.indLiberado}"
+						required="true" requiredMessage="Campo [Liberado] é obrigatório.">
+						<f:selectItem itemLabel="Sim" itemValue="S" />
+						<f:selectItem itemLabel="Não" itemValue="N" />
+					</p:selectOneRadio>
+
+					<p:outputLabel for="situacao" value="Situação:"
+						style="float: right;" />
+					<p:selectOneRadio id="situacao"
+						value="#{versaoController.versaoModel.indSituacao}"
+						required="true" requiredMessage="Campo [Situação] é obrigatório.">
+						<f:selectItem itemLabel="Sim" itemValue="S" />
+						<f:selectItem itemLabel="Não" itemValue="N" />
+					</p:selectOneRadio>
+
+
+					<h:outputLabel id="lbItem" value="*item:" for="itemM"
+						style="float: right;" />
+					<p:selectCheckboxMenu id="itemM"
+						value="#{versaoController.versaoModel.listItemVO}" label="Item"
+						multiple="true" filter="true" filterMatchMode="startsWith"
+						panelStyle="width:250px" converter="itemConverter">
+						<p:ajax event="toggleSelect">
+						</p:ajax>
+						<f:selectItems value="#{versaoController.listItem}"
+							itemLabel="#{item.codigo} - #{item.titulo}" var="item" />
+					</p:selectCheckboxMenu>
+					<br />
+					<p:commandButton value="Cadastrar Item" type="button"
+						onclick="PF('dlg2').show();" />
+
+					<p:commandButton value="Adicionar Versão"
+						action="#{versaoController.saveVersao()}"
+						update="frmGeral, messages, dtVersao" process="@form" />
+				</h:panelGrid>
+
+				<p:spacer height="10" />
+
+				<p:dataTable id="dtVersao"
+					emptyMessage="Nenhum registro encontrado."
+					value="#{versaoController.listVersaoItem}" var="v"
+					style="text-align: center; font-weight: bold;">
+					<f:facet name="header">
+						<h:outputText value="Registro de Versões" />
+					</f:facet>
+
+					<p:column>
+						<f:facet name="header">
+							<h:outputText value="Número Versão" />
+						</f:facet>
+						<h:outputText value="#{v.versao.numero}" />
+					</p:column>
+					<p:column>
+						<f:facet name="header">
+							<h:outputText value="Itens" />
+						</f:facet>
+						<h:outputText value="#{v.titulo}" />
+					</p:column>
+
+					<p:column>
+						<f:facet name="header">
+							<h:outputText value="Descrição" />
+						</f:facet>
+						<h:outputText value="#{v.descricao}" />
+					</p:column>
+
+					<p:column>
+						<f:facet name="header">
+							<h:outputText value="Remover" />
+						</f:facet>
+						<f:ajax event="click" render="@form">
+							<h:commandLink value="Remover" />
+						</f:ajax>
+					</p:column>
+
+					<f:facet name="footer">
+
+					</f:facet>
+				</p:dataTable>
+			</p:fieldset>
+
+		</h:form>
+		<h:form id="formDlg">
+			<p:dialog header="Cadastrar Item" widgetVar="dlg2" modal="true"
+				height="100">
+				<h:panelGrid columns="2"
+					style="font-family: Verdana, Arial; font-weight: bold;">
+
+					<h:outputLabel id="lbTitulo" value="*Titulo do Item:" for="titulo"
+						style="float: right;" />
+					<p:inputText id="titulo"
+						value="#{versaoController.versaoModel.item.titulo}"
+						required="true"
+						requiredMessage="Campo [Número da Versão] é obrigatório." />
+
+					<h:outputLabel id="lbDesc" value="*Descrição do Item:" for="desc"
+						style="float: right;" />
+					<p:inputTextarea id="desc" size="500" cols="20"
+						value="#{versaoController.versaoModel.item.descricao}"
+						required="true" requiredMessage="Campo [Descrição] é obrigatório.">
+					</p:inputTextarea>
+
+					<p:commandButton value="Adicionar Item"
+						actionListener="#{versaoController.saveItem()}"
+						update="frmGeral,frmGeral:painelId" oncomplete="dlg2.hide()" />
+				</h:panelGrid>
+			</p:dialog>
+		</h:form>
+	</h:body>
+</f:view>
+</html>
