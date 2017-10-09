@@ -1,0 +1,158 @@
+-- MySQL dump 10.13  Distrib 5.7.17, for Win64 (x86_64)
+--
+-- Host: localhost    Database: prova
+-- ------------------------------------------------------
+-- Server version	5.7.19-log
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8 */;
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+--
+-- Table structure for table `aud_versao`
+--
+
+DROP TABLE IF EXISTS `aud_versao`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `aud_versao` (
+  `COD_AUD_VERSAO` int(11) NOT NULL AUTO_INCREMENT COMMENT 'codigo sequencial (seq_aud_versao)',
+  `NOM_COLUNA` varchar(20) DEFAULT NULL COMMENT 'noma da coluna que esta sofrendo a alteracao',
+  `CONTEUDO_ANTIGO` varchar(1001) DEFAULT NULL COMMENT 'conteudo antigo da coluna que esta sendo alterada',
+  `CONTEUDO_NOVO` varchar(1001) DEFAULT NULL COMMENT 'conteudo novo da coluna que esta sendo alterada',
+  `NOM_LOGIN` varchar(20) DEFAULT NULL COMMENT 'login quem esta alterando',
+  `COD_VERSAO` int(11) DEFAULT NULL COMMENT 'FK da tabela versao',
+  PRIMARY KEY (`COD_AUD_VERSAO`),
+  KEY `fk_AUD_VERSAO_LOGIN1_idx` (`NOM_LOGIN`),
+  KEY `fk_AUD_VERSAO_VERSAO1_idx` (`COD_VERSAO`),
+  CONSTRAINT `fk_AUD_VERSAO_LOGIN1` FOREIGN KEY (`NOM_LOGIN`) REFERENCES `login` (`NOM_LOGIN`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `fk_AUD_VERSAO_VERSAO1` FOREIGN KEY (`COD_VERSAO`) REFERENCES `versao` (`COD_VERSAO`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `aud_versao`
+--
+
+LOCK TABLES `aud_versao` WRITE;
+/*!40000 ALTER TABLE `aud_versao` DISABLE KEYS */;
+/*!40000 ALTER TABLE `aud_versao` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `item`
+--
+
+DROP TABLE IF EXISTS `item`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `item` (
+  `COD_ITEM` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Codigo sequencial de item(SQ_ITEM)',
+  `DSC_TITULO` varchar(50) NOT NULL COMMENT 'descricao do titulo',
+  `TXT_DESCRICAO` varchar(500) NOT NULL COMMENT 'texto do item',
+  PRIMARY KEY (`COD_ITEM`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `item`
+--
+
+LOCK TABLES `item` WRITE;
+/*!40000 ALTER TABLE `item` DISABLE KEYS */;
+/*!40000 ALTER TABLE `item` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `login`
+--
+
+DROP TABLE IF EXISTS `login`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `login` (
+  `NOM_LOGIN` varchar(20) NOT NULL,
+  `TXT_NOME` varchar(80) DEFAULT NULL,
+  PRIMARY KEY (`NOM_LOGIN`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `login`
+--
+
+LOCK TABLES `login` WRITE;
+/*!40000 ALTER TABLE `login` DISABLE KEYS */;
+/*!40000 ALTER TABLE `login` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `versao`
+--
+
+DROP TABLE IF EXISTS `versao`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `versao` (
+  `COD_VERSAO` int(11) NOT NULL AUTO_INCREMENT COMMENT 'codigo sequecial da versao (SQ_VERSAO)',
+  `NRO_VERSAO` varchar(10) NOT NULL COMMENT 'numero da versao alfanumerico',
+  `DAT_VERSAO` date DEFAULT NULL COMMENT 'data da liberacao da versao',
+  `IND_LIBERADO` char(1) NOT NULL COMMENT 'liberado ? ''S''im / ''N''ao',
+  `IND_SITUACAO` char(1) NOT NULL COMMENT '''A''tivo / ''C''ancelado',
+  PRIMARY KEY (`COD_VERSAO`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `versao`
+--
+
+LOCK TABLES `versao` WRITE;
+/*!40000 ALTER TABLE `versao` DISABLE KEYS */;
+/*!40000 ALTER TABLE `versao` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `versao_item`
+--
+
+DROP TABLE IF EXISTS `versao_item`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `versao_item` (
+  `COD_VERSAO` int(11) NOT NULL,
+  `COD_ITEM` int(11) NOT NULL,
+  PRIMARY KEY (`COD_VERSAO`,`COD_ITEM`),
+  KEY `fk_VERSAO_has_ITEM_ITEM1_idx` (`COD_ITEM`),
+  KEY `fk_VERSAO_has_ITEM_VERSAO_idx` (`COD_VERSAO`),
+  CONSTRAINT `fk_VERSAO_has_ITEM_ITEM1` FOREIGN KEY (`COD_ITEM`) REFERENCES `item` (`COD_ITEM`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `fk_VERSAO_has_ITEM_VERSAO` FOREIGN KEY (`COD_VERSAO`) REFERENCES `versao` (`COD_VERSAO`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `versao_item`
+--
+
+LOCK TABLES `versao_item` WRITE;
+/*!40000 ALTER TABLE `versao_item` DISABLE KEYS */;
+/*!40000 ALTER TABLE `versao_item` ENABLE KEYS */;
+UNLOCK TABLES;
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+-- Dump completed on 2017-10-09  0:13:42
